@@ -33,6 +33,8 @@ function App() {
     null,
   );
 
+  const [animalEmEdicao, setAnimalEmEdicao] = useState<Animal | null>(null);
+
   function salvarAnimal() {
     // console.log('salvarAnimal chamado', formulario);
 
@@ -64,7 +66,30 @@ function App() {
       observacoes: formulario.observacoes || null,
     };
 
-    setAnimais([...animais, novoAnimal]);
+    if (animalEmEdicao) {
+      setAnimais(
+        animais.map((animal) =>
+          animal.id === animalEmEdicao.id
+            ? {
+                ...animal,
+                brinco: formulario.brinco,
+                sexo: formulario.sexo as 'Macho' | 'Fêmea',
+                raca: formulario.raca,
+                dataNascimento: formulario.dataNascimento || null,
+                peso: formulario.peso ? Number(formulario.peso) : null,
+                dataEntrada: formulario.dataEntrada,
+                origem: formulario.origem || null,
+                valorCompra: formulario.valorCompra
+                  ? Number(formulario.valorCompra)
+                  : null,
+                obsrvacaoes: formulario.observacoes || null,
+              }
+            : animal,
+        ),
+      );
+    } else {
+      setAnimais([...animais, novoAnimal]);
+    }
 
     setFormulario(formularioInicial);
     setFormularioAberto(false);
@@ -91,7 +116,12 @@ function App() {
 
           <button
             type="button"
-            onClick={() => setFormularioAberto(true)}
+            onClick={() => {
+              setAnimalEmEdicao(null);
+              setFormulario(formularioInicial);
+              setErroFormulario('');
+              setFormularioAberto(true);
+            }}
             className="cursor-pointer rounded-lg bg-slate-800 px-5 py-3 font-medium text-white hover:bg-slate-700"
           >
             + Novo animal
@@ -101,7 +131,7 @@ function App() {
         {formularioAberto && (
           <div className="mb-8 rounded-xl bg-white p-6 shadow-sm">
             <h2 className="text-xl font-semibold text-slate-800">
-              Novo animal
+              {animalEmEdicao ? 'Editar animal' : 'Novo animal'}
             </h2>
 
             <div>
@@ -312,7 +342,12 @@ function App() {
             <div className="mt-6 flex justify-end gap-3">
               <button
                 type="button"
-                onClick={() => setFormularioAberto(false)}
+                onClick={() => {
+                  setFormularioAberto(false);
+                  setAnimalEmEdicao(null);
+                  setFormulario(formularioInicial);
+                  setErroFormulario('');
+                }}
                 className="cursor-pointer rounded-lg border border-slate-300 bg-white px-5 py-2 font-medium text-slate-700 hover:bg-slate-100"
               >
                 Cancelar
@@ -323,7 +358,7 @@ function App() {
                 onClick={salvarAnimal}
                 className="cursor-pointer rounded-lg bg-slate-800 px-5 py-2 font-medium text-white hover:bg-slate-700"
               >
-                Salvar animal
+                {animalEmEdicao ? 'Salvar alterações' : 'Salvar'}
               </button>
             </div>
           </div>
@@ -362,7 +397,38 @@ function App() {
 
               <button
                 type="button"
-                onClick={() => setAnimalSelecionado(null)}
+                onClick={() => {
+                  setAnimalEmEdicao(animalSelecionado);
+
+                  setFormulario({
+                    brinco: animalSelecionado.brinco,
+                    sexo: animalSelecionado.sexo,
+                    raca: animalSelecionado.raca,
+                    dataNascimento: animalSelecionado.dataNascimento ?? '',
+                    peso: animalSelecionado.peso?.toString() ?? '',
+                    dataEntrada: animalSelecionado.dataEntrada,
+                    origem: animalSelecionado.origem ?? '',
+                    valorCompra:
+                      animalSelecionado.valorCompra?.toString() ?? '',
+                    observacoes: animalSelecionado.observacoes ?? '',
+                  });
+
+                  setFormularioAberto(true);
+                }}
+                className="cursor-pointer rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700"
+              >
+                Editar
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setAnimalSelecionado(null);
+                  setAnimalEmEdicao(null);
+                  setFormulario(formularioInicial);
+                  setFormularioAberto(false);
+                  setErroFormulario('');
+                }}
                 className="cursor-pointer text-sem text-slate-500 hover:text-slate-800"
               >
                 Fechar
@@ -445,4 +511,3 @@ function App() {
 }
 
 export default App;
-
