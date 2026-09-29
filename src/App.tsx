@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { Animal } from './types/Animal';
 import { animaisIniciais } from './data/animais';
 import { AnimalList } from './components/AnimalList';
+import { AnimalForm } from './components/AnimalForm';
 import './App.css';
 
 const formularioInicial = {
@@ -15,12 +16,6 @@ const formularioInicial = {
   valorCompra: '',
   observacoes: '',
 };
-
-// const statusLabel = {
-//   PLANTEL: 'No plantel',
-//   VENDIDO: 'Vendido',
-//   MORTO: 'Morto',
-// };
 
 function App() {
   const [formularioAberto, setFormularioAberto] = useState(false);
@@ -129,240 +124,21 @@ function App() {
         </header>
 
         {formularioAberto && (
-          <div className="mb-8 rounded-xl bg-white p-6 shadow-sm">
-            <h2 className="text-xl font-semibold text-slate-800">
-              {animalEmEdicao ? 'Editar animal' : 'Novo animal'}
-            </h2>
-
-            <div>
-              <label
-                htmlFor="brinco"
-                className="mb-1 block text-sm font-meium text-slate-700"
-              >
-                Brinco
-              </label>
-
-              <input
-                id="brinco"
-                type="text"
-                value={formulario.brinco}
-                onChange={(event) =>
-                  setFormulario({
-                    ...formulario,
-                    brinco: event.target.value,
-                  })
-                }
-                className="w-full rounded-lg broder border-slate-300 px-3 py-2 outline-none focus:border-slate-500"
-              />
-            </div>
-
-            <div>
-              <label
-                htmlFor="sexo"
-                className="mb-1 block text-sm font-meium text-slate-700"
-              >
-                Sexo
-              </label>
-
-              <select
-                id="sexo"
-                value={formulario.sexo}
-                onChange={(event) =>
-                  setFormulario({
-                    ...formulario,
-                    sexo: event.target.value,
-                  })
-                }
-                className="w-full rounded-lg broder border-slate-300 px-3 py-2 outline-none focus:border-slate-500"
-              >
-                <option value="">Selecione</option>
-                <option value="Macho">Macho</option>
-                <option value="Fêmea">Fêmea</option>
-              </select>
-            </div>
-
-            <div>
-              <label
-                htmlFor="raca"
-                className="mb-1 block text-sm font-meium text-slate-700"
-              >
-                Raça
-              </label>
-
-              <input
-                id="raca"
-                type="text"
-                value={formulario.raca}
-                onChange={(event) =>
-                  setFormulario({
-                    ...formulario,
-                    raca: event.target.value,
-                  })
-                }
-                className="w-full rounded-lg broder border-slate-300 px-3 py-2 outline-none focus:border-slate-500"
-              />
-            </div>
-
-            <div>
-              <label
-                htmlFor="dataNascimento"
-                className="mb-1 block text-sm font-medium text-slate-700"
-              >
-                {' '}
-                Data de nascimento
-              </label>
-
-              <input
-                id="dataNascimento"
-                type="date"
-                value={formulario.dataNascimento}
-                onChange={(event) =>
-                  setFormulario({
-                    ...formulario,
-                    dataNascimento: event.target.value,
-                  })
-                }
-                className="w-full rounded-lg broder border-slate-300 px-3 py-2 outline-none focus:border-slate-500"
-              />
-            </div>
-
-            <div>
-              <label
-                htmlFor="peso"
-                className="mb-1 block text-sm font-medium text-slate-700"
-              >
-                Peso (Kg)
-              </label>
-
-              <input
-                id="peso"
-                type="number"
-                min="0"
-                step="0.1"
-                value={formulario.peso}
-                onChange={(event) =>
-                  setFormulario({ ...formulario, peso: event.target.value })
-                }
-                className="w-full roeunded-lg border border-slate-300 px-3 py-2 outiline-none focus:border-slate-500"
-              />
-            </div>
-
-            <div>
-              <label
-                htmlFor="dataEntrada"
-                className="mb-1 block text-sm font-medium text-slate-700"
-              >
-                Data de entrada
-              </label>
-
-              <input
-                id="dataEntrada"
-                type="date"
-                value={formulario.dataEntrada}
-                onChange={(event) =>
-                  setFormulario({
-                    ...formulario,
-                    dataEntrada: event.target.value,
-                  })
-                }
-                className="w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-slate-500"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="origem">Origem / Fornecedor</label>
-
-              <input
-                id="origem"
-                type="text"
-                value={formulario.origem}
-                onChange={(event) =>
-                  setFormulario({
-                    ...formulario,
-                    origem: event.target.value,
-                  })
-                }
-                className="w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-slate-500"
-              />
-            </div>
-
-            <div>
-              <label
-                htmlFor="valorCompra"
-                className="mb-1 block text-sm font-medium text-slate-700"
-              >
-                {' '}
-                Valor de compra (R$)
-              </label>
-
-              <input
-                id="valorCompra"
-                type="number"
-                min="0"
-                step="0.01"
-                value={formulario.valorCompra}
-                onChange={(event) =>
-                  setFormulario({
-                    ...formulario,
-                    valorCompra: event.target.value,
-                  })
-                }
-                className="w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-slate-500"
-              />
-            </div>
-
-            <div className="mt-4">
-              <label
-                htmlFor="observacoes"
-                className="mb-1 block text-sm font-medium text-slate-700"
-              >
-                Observações
-              </label>
-
-              <textarea
-                id="observacoes"
-                rows={3}
-                value={formulario.observacoes}
-                onChange={(event) =>
-                  setFormulario({
-                    ...formulario,
-                    observacoes: event.target.value,
-                  })
-                }
-                className="w-full resize-none roudned-lg border border-slate-300 px-3 py-2 outline-none focus:border-slate-500"
-              />
-            </div>
-
-            {erroFormulario && (
-              <p className="mt-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
-                {erroFormulario}
-              </p>
-            )}
-
-            <div className="mt-6 flex justify-end gap-3">
-              <button
-                type="button"
-                onClick={() => {
-                  setFormularioAberto(false);
-                  setAnimalEmEdicao(null);
-                  setFormulario(formularioInicial);
-                  setErroFormulario('');
-                }}
-                className="cursor-pointer rounded-lg border border-slate-300 bg-white px-5 py-2 font-medium text-slate-700 hover:bg-slate-100"
-              >
-                Cancelar
-              </button>
-
-              <button
-                type="button"
-                onClick={salvarAnimal}
-                className="cursor-pointer rounded-lg bg-slate-800 px-5 py-2 font-medium text-white hover:bg-slate-700"
-              >
-                {animalEmEdicao ? 'Salvar alterações' : 'Salvar'}
-              </button>
-            </div>
-          </div>
+          <AnimalForm
+            formulario={formulario}
+            animalEmEdicao={animalEmEdicao}
+            erroFormulario={erroFormulario}
+            onFormularioChange={setFormulario}
+            onSalvar={salvarAnimal}
+            onCancelar={() => {
+              setFormularioAberto(false);
+              setAnimalEmEdicao(null);
+              setFormulario(formularioInicial);
+              setErroFormulario('');
+            }}
+          />
         )}
+
         <section className="mb-8 grid gap-4 sm:grid-cols-3">
           <div className="rounded-xl bg-white p-5 shadow-sm">
             <p className="text-sm text-slate-500">No plantel</p>
