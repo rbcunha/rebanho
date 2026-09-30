@@ -1,6 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { Animal } from './types/Animal';
-import { animaisIniciais } from './data/animais';
 import { AnimalList } from './components/AnimalList';
 import { AnimalForm } from './components/AnimalForm';
 import { Modal } from './components/Modal';
@@ -8,6 +7,14 @@ import { VendaForm } from './components/VendaForm';
 import { MorteForm } from './components/MorteForm';
 import { formatarMoeda, formatarNumero, textoParaNumero } from './utils/numero';
 import { formatarData } from './utils/data';
+import {
+  conectarBanco,
+  listarAnimais,
+  inserirAnimal,
+  atualizarAnimal,
+  atualizarVenda,
+  atualizarMorte,
+} from './lib/database';
 import './App.css';
 
 const formularioInicial = {
@@ -26,7 +33,7 @@ function App() {
   const [formularioAberto, setFormularioAberto] = useState(false);
   const [formulario, setFormulario] = useState(formularioInicial);
 
-  const [animais, setAnimais] = useState<Animal[]>(animaisIniciais);
+  const [animais, setAnimais] = useState<Animal[]>([]);
   const [erroFormulario, setErroFormulario] = useState('');
 
   const [animalSelecionado, setAnimalSelecionado] = useState<Animal | null>(
@@ -37,7 +44,21 @@ function App() {
   const [animalEmVenda, setAnimalEmVenda] = useState<Animal | null>(null);
   const [animalEmMorte, setAnimalEmMorte] = useState<Animal | null>(null);
 
-  function salvarAnimal() {
+  useEffect(() => {
+    async function iniciarBanco() {
+      try {
+        await conectarBanco();
+        const animaisDoBanco = await listarAnimais();
+        setAnimais(animaisDoBanco);
+      } catch (erro) {
+        console.error('Erro ao conectar ao SQLite:', erro);
+      }
+    }
+
+    iniciarBanco();
+  }, []);
+
+  async function salvarAnimal() {
     // console.log('salvarAnimal chamado', formulario);
 
     if (!formulario.brinco || !formulario.sexo || !formulario.dataEntrada) {
@@ -84,6 +105,8 @@ function App() {
         observacoes: formulario.observacoes || null,
       };
 
+      await atualizarAnimal(animalAtualizado);
+
       setAnimais(
         animais.map((animal) =>
           animal.id === animalEmEdicao.id ? animalAtualizado : animal,
@@ -91,6 +114,7 @@ function App() {
       );
       setAnimalSelecionado(animalAtualizado);
     } else {
+      await inserirAnimal(novoAnimal);
       setAnimais([...animais, novoAnimal]);
     }
 
@@ -106,7 +130,7 @@ function App() {
     setErroFormulario('');
   }
 
-  function venderAnimal(
+  async function venderAnimal(
     dataVenda: string,
     comprador: string,
     valorVenda: number,
@@ -120,17 +144,19 @@ function App() {
       valorVenda,
     };
 
+    await atualizarVenda(animalAtualizado);
+
     setAnimais(
       animais.map((animal) =>
         animal.id === animalEmVenda.id ? animalAtualizado : animal,
       ),
     );
 
+    setAnimalSelecionado(animalAtualizado);
     setAnimalEmVenda(null);
-    setAnimalSelecionado(null);
   }
 
-  function registrarMorte(dataMorte: string, causaMorte: string) {
+  async function registrarMorte(dataMorte: string, causaMorte: string) {
     if (!animalEmMorte) return;
 
     const animalAtualizado: Animal = {
@@ -140,14 +166,16 @@ function App() {
       causaMorte: causaMorte || null,
     };
 
+    await atualizarMorte(animalAtualizado);
+
     setAnimais(
       animais.map((animal) =>
         animal.id === animalEmMorte.id ? animalAtualizado : animal,
       ),
     );
 
+    setAnimalSelecionado(animalAtualizado);
     setAnimalEmMorte(null);
-    setAnimalSelecionado(null);
   }
 
   const noPlantel = animais.filter(
