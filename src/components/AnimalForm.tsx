@@ -30,16 +30,16 @@ export function AnimalForm({
   onCancelar,
 }: AnimalFormProps) {
   return (
-    <section>
-      <div className="mb-8 rounded-xl bg-white p-6 shadow-sm">
-        <h2 className="text-xl font-semibold text-slate-800">
-          {animalEmEdicao ? 'Editar animal' : 'Novo animal'}
-        </h2>
+    <section className="p-6">
+      <h2 className="text-xl font-semibold text-slate-800">
+        {animalEmEdicao ? 'Editar animal' : 'Novo animal'}
+      </h2>
 
+      <div className="mt-6 space-y-4">
         <div>
           <label
             htmlFor="brinco"
-            className="mb-1 block text-sm font-meium text-slate-700"
+            className="mb-1 block text-sm font-medium text-slate-700"
           >
             Brinco
           </label>
@@ -54,14 +54,14 @@ export function AnimalForm({
                 brinco: event.target.value,
               })
             }
-            className="w-full rounded-lg broder border-slate-300 px-3 py-2 outline-none focus:border-slate-500"
+            className="w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-slate-500"
           />
         </div>
 
         <div>
           <label
             htmlFor="sexo"
-            className="mb-1 block text-sm font-meium text-slate-700"
+            className="mb-1 block text-sm font-medium text-slate-700"
           >
             Sexo
           </label>
@@ -75,7 +75,7 @@ export function AnimalForm({
                 sexo: event.target.value,
               })
             }
-            className="w-full rounded-lg broder border-slate-300 px-3 py-2 outline-none focus:border-slate-500"
+            className="w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-slate-500"
           >
             <option value="">Selecione</option>
             <option value="Macho">Macho</option>
@@ -86,7 +86,7 @@ export function AnimalForm({
         <div>
           <label
             htmlFor="raca"
-            className="mb-1 block text-sm font-meium text-slate-700"
+            className="mb-1 block text-sm font-medium text-slate-700"
           >
             Raça
           </label>
@@ -101,7 +101,7 @@ export function AnimalForm({
                 raca: event.target.value,
               })
             }
-            className="w-full rounded-lg broder border-slate-300 px-3 py-2 outline-none focus:border-slate-500"
+            className="w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-slate-500"
           />
         </div>
 
@@ -110,7 +110,6 @@ export function AnimalForm({
             htmlFor="dataNascimento"
             className="mb-1 block text-sm font-medium text-slate-700"
           >
-            {' '}
             Data de nascimento
           </label>
 
@@ -124,7 +123,7 @@ export function AnimalForm({
                 dataNascimento: event.target.value,
               })
             }
-            className="w-full rounded-lg broder border-slate-300 px-3 py-2 outline-none focus:border-slate-500"
+            className="w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-slate-500"
           />
         </div>
 
@@ -138,14 +137,13 @@ export function AnimalForm({
 
           <input
             id="peso"
-            type="number"
-            min="0"
-            step="0.1"
+            type="text"
+            inputMode="decimal"
             value={formulario.peso}
             onChange={(event) =>
               onFormularioChange({ ...formulario, peso: event.target.value })
             }
-            className="w-full roeunded-lg border border-slate-300 px-3 py-2 outiline-none focus:border-slate-500"
+            className="w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-slate-500"
           />
         </div>
 
@@ -172,7 +170,12 @@ export function AnimalForm({
         </div>
 
         <div>
-          <label htmlFor="origem">Origem / Fornecedor</label>
+          <label
+            htmlFor="origem"
+            className="mb-1 block text-sm font-medium text-slate-700"
+          >
+            Origem / Fornecedor
+          </label>
 
           <input
             id="origem"
@@ -193,15 +196,13 @@ export function AnimalForm({
             htmlFor="valorCompra"
             className="mb-1 block text-sm font-medium text-slate-700"
           >
-            {' '}
             Valor de compra (R$)
           </label>
 
           <input
             id="valorCompra"
-            type="number"
-            min="0"
-            step="0.01"
+            type="text"
+            inputMode="decimal"
             value={formulario.valorCompra}
             onChange={(event) =>
               onFormularioChange({
@@ -213,7 +214,7 @@ export function AnimalForm({
           />
         </div>
 
-        <div className="mt-4">
+        <div>
           <label
             htmlFor="observacoes"
             className="mb-1 block text-sm font-medium text-slate-700"
@@ -231,33 +232,33 @@ export function AnimalForm({
                 observacoes: event.target.value,
               })
             }
-            className="w-full resize-none roudned-lg border border-slate-300 px-3 py-2 outline-none focus:border-slate-500"
+            className="w-full resize-none rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-slate-500"
           />
         </div>
+      </div>
 
-        {erroFormulario && (
-          <p className="mt-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
-            {erroFormulario}
-          </p>
-        )}
+      {erroFormulario && (
+        <p className="mt-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
+          {erroFormulario}
+        </p>
+      )}
 
-        <div className="mt-6 flex justify-end gap-3">
-          <button
-            type="button"
-            onClick={onCancelar}
-            className="cursor-pointer rounded-lg border border-slate-300 bg-white px-5 py-2 font-medium text-slate-700 hover:bg-slate-100"
-          >
-            Cancelar
-          </button>
+      <div className="mt-6 flex justify-end gap-3">
+        <button
+          type="button"
+          onClick={onCancelar}
+          className="cursor-pointer rounded-lg border border-slate-300 bg-white px-5 py-2 font-medium text-slate-700 hover:bg-slate-100"
+        >
+          Cancelar
+        </button>
 
-          <button
-            type="button"
-            onClick={onSalvar}
-            className="cursor-pointer rounded-lg bg-slate-800 px-5 py-2 font-medium text-white hover:bg-slate-700"
-          >
-            {animalEmEdicao ? 'Salvar alterações' : 'Salvar'}
-          </button>
-        </div>
+        <button
+          type="button"
+          onClick={onSalvar}
+          className="cursor-pointer rounded-lg bg-slate-800 px-5 py-2 font-medium text-white hover:bg-slate-700"
+        >
+          {animalEmEdicao ? 'Salvar alterações' : 'Salvar'}
+        </button>
       </div>
     </section>
   );

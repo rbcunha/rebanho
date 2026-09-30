@@ -3,6 +3,11 @@ import type { Animal } from './types/Animal';
 import { animaisIniciais } from './data/animais';
 import { AnimalList } from './components/AnimalList';
 import { AnimalForm } from './components/AnimalForm';
+import { Modal } from './components/Modal';
+import { VendaForm } from './components/VendaForm';
+import { MorteForm } from './components/MorteForm';
+import { formatarMoeda, formatarNumero, textoParaNumero } from './utils/numero';
+import { formatarData } from './utils/data';
 import './App.css';
 
 const formularioInicial = {
@@ -29,6 +34,8 @@ function App() {
   );
 
   const [animalEmEdicao, setAnimalEmEdicao] = useState<Animal | null>(null);
+  const [animalEmVenda, setAnimalEmVenda] = useState<Animal | null>(null);
+  const [animalEmMorte, setAnimalEmMorte] = useState<Animal | null>(null);
 
   function salvarAnimal() {
     // console.log('salvarAnimal chamado', formulario);
@@ -46,11 +53,11 @@ function App() {
       sexo: formulario.sexo as 'Macho' | 'Fêmea',
       raca: formulario.raca,
       dataNascimento: formulario.dataNascimento || null,
-      peso: formulario.peso ? Number(formulario.peso) : null,
+      peso: formulario.peso ? textoParaNumero(formulario.peso) : null,
       dataEntrada: formulario.dataEntrada,
       origem: formulario.origem || null,
       valorCompra: formulario.valorCompra
-        ? Number(formulario.valorCompra)
+        ? textoParaNumero(formulario.valorCompra)
         : null,
       status: 'PLANTEL',
       dataSaida: null,
@@ -62,26 +69,27 @@ function App() {
     };
 
     if (animalEmEdicao) {
+      const animalAtualizado: Animal = {
+        ...animalEmEdicao,
+        brinco: formulario.brinco,
+        sexo: formulario.sexo as 'Macho' | 'Fêmea',
+        raca: formulario.raca,
+        dataNascimento: formulario.dataNascimento || null,
+        peso: formulario.peso ? textoParaNumero(formulario.peso) : null,
+        dataEntrada: formulario.dataEntrada,
+        origem: formulario.origem,
+        valorCompra: formulario.valorCompra
+          ? textoParaNumero(formulario.valorCompra)
+          : null,
+        observacoes: formulario.observacoes || null,
+      };
+
       setAnimais(
         animais.map((animal) =>
-          animal.id === animalEmEdicao.id
-            ? {
-                ...animal,
-                brinco: formulario.brinco,
-                sexo: formulario.sexo as 'Macho' | 'Fêmea',
-                raca: formulario.raca,
-                dataNascimento: formulario.dataNascimento || null,
-                peso: formulario.peso ? Number(formulario.peso) : null,
-                dataEntrada: formulario.dataEntrada,
-                origem: formulario.origem || null,
-                valorCompra: formulario.valorCompra
-                  ? Number(formulario.valorCompra)
-                  : null,
-                obsrvacaoes: formulario.observacoes || null,
-              }
-            : animal,
+          animal.id === animalEmEdicao.id ? animalAtualizado : animal,
         ),
       );
+      setAnimalSelecionado(animalAtualizado);
     } else {
       setAnimais([...animais, novoAnimal]);
     }
@@ -89,6 +97,57 @@ function App() {
     setFormulario(formularioInicial);
     setFormularioAberto(false);
     setErroFormulario('');
+  }
+
+  function fecharFormulario() {
+    setFormularioAberto(false);
+    setAnimalEmEdicao(null);
+    setFormulario(formularioInicial);
+    setErroFormulario('');
+  }
+
+  function venderAnimal(
+    dataVenda: string,
+    comprador: string,
+    valorVenda: number,
+  ) {
+    if (!animalEmVenda) return;
+    const animalAtualizado: Animal = {
+      ...animalEmVenda,
+      status: 'VENDIDO',
+      dataSaida: dataVenda,
+      comprador: comprador || null,
+      valorVenda,
+    };
+
+    setAnimais(
+      animais.map((animal) =>
+        animal.id === animalEmVenda.id ? animalAtualizado : animal,
+      ),
+    );
+
+    setAnimalEmVenda(null);
+    setAnimalSelecionado(null);
+  }
+
+  function registrarMorte(dataMorte: string, causaMorte: string) {
+    if (!animalEmMorte) return;
+
+    const animalAtualizado: Animal = {
+      ...animalEmMorte,
+      status: 'MORTO',
+      dataMorte,
+      causaMorte: causaMorte || null,
+    };
+
+    setAnimais(
+      animais.map((animal) =>
+        animal.id === animalEmMorte.id ? animalAtualizado : animal,
+      ),
+    );
+
+    setAnimalEmMorte(null);
+    setAnimalSelecionado(null);
   }
 
   const noPlantel = animais.filter(
@@ -108,7 +167,6 @@ function App() {
             <h1 className="p-8 text-3xl font-bold text-slate-800">Bezerros</h1>
             <p className="mt-1 text-slate-500">Controle do Rebanho</p>
           </div>
-
           <button
             type="button"
             onClick={() => {
@@ -124,19 +182,36 @@ function App() {
         </header>
 
         {formularioAberto && (
-          <AnimalForm
-            formulario={formulario}
-            animalEmEdicao={animalEmEdicao}
-            erroFormulario={erroFormulario}
-            onFormularioChange={setFormulario}
-            onSalvar={salvarAnimal}
-            onCancelar={() => {
-              setFormularioAberto(false);
-              setAnimalEmEdicao(null);
-              setFormulario(formularioInicial);
-              setErroFormulario('');
-            }}
-          />
+          <Modal onClose={fecharFormulario}>
+            <AnimalForm
+              formulario={formulario}
+              animalEmEdicao={animalEmEdicao}
+              erroFormulario={erroFormulario}
+              onFormularioChange={setFormulario}
+              onSalvar={salvarAnimal}
+              onCancelar={fecharFormulario}
+            />
+          </Modal>
+        )}
+
+        {animalEmVenda && (
+          <Modal onClose={() => setAnimalEmVenda(null)}>
+            <VendaForm
+              animal={animalEmVenda}
+              onCancelar={() => setAnimalEmVenda(null)}
+              onVender={venderAnimal}
+            />
+          </Modal>
+        )}
+
+        {animalEmMorte && (
+          <Modal onClose={() => setAnimalEmMorte(null)}>
+            <MorteForm
+              animal={animalEmMorte}
+              onCancelar={() => setAnimalEmMorte(null)}
+              onRegistrarMorte={registrarMorte}
+            />
+          </Modal>
         )}
 
         <section className="mb-8 grid gap-4 sm:grid-cols-3">
@@ -167,9 +242,83 @@ function App() {
                 </h2>
 
                 <p className="mt-1 text-sm text-slate-500">
-                  Sexo: {animalSelecionado.status}
+                  Sexo: {animalSelecionado.sexo}
                 </p>
               </div>
+
+              {animalSelecionado.status === 'PLANTEL' && (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => setAnimalEmVenda(animalSelecionado)}
+                    className="cursor-pointer rounded-lg bg-emerald-700 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-600"
+                  >
+                    Vender
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setAnimalEmMorte(animalSelecionado)}
+                    className="cursor-pointer rounded-lg bg-red-700 px-4 py-2 text-sm font-medium text-white hover:bg-red-600"
+                  >
+                    Registrar morte
+                  </button>
+                </>
+              )}
+
+              {animalSelecionado.status === 'VENDIDO' && (
+                <>
+                  <p>
+                    <strong>Data da venda:</strong>{' '}
+                    {animalSelecionado.dataSaida
+                      ? formatarData(animalSelecionado.dataSaida)
+                      : 'Não informada'}
+                  </p>
+
+                  <p>
+                    <strong>Comprador:</strong>{' '}
+                    {animalSelecionado.comprador || 'Não informado'}
+                  </p>
+
+                  <p>
+                    <strong>Valor da venda:</strong>{' '}
+                    {animalSelecionado.valorVenda !== null
+                      ? formatarMoeda(animalSelecionado.valorVenda)
+                      : 'Não informado'}
+                  </p>
+
+                  <button
+                    type="button"
+                    onClick={() => setAnimalEmVenda(animalSelecionado)}
+                    className="cursor-pointer rounded-lg bg-emerald-700 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-600"
+                  >
+                    Editar Venda
+                  </button>
+                </>
+              )}
+
+              {animalSelecionado.status === 'MORTO' && (
+                <>
+                  <p>
+                    <strong>Data da morte:</strong>{' '}
+                    {animalSelecionado.dataMorte
+                      ? formatarData(animalSelecionado.dataMorte)
+                      : 'Não informada'}
+                  </p>
+                  <p>
+                    <strong>Causa da morte:</strong>{' '}
+                    {animalSelecionado.causaMorte || 'Não informada'}
+                  </p>
+
+                  <button
+                    type="button"
+                    onClick={() => setAnimalEmMorte(animalSelecionado)}
+                    className="cursor-pointer rounded-lg bg-red-700 px-4 py-2 text-sm font-medium text-white hover:bg-red-600"
+                  >
+                    Editar morte
+                  </button>
+                </>
+              )}
 
               <button
                 type="button"
@@ -230,7 +379,7 @@ function App() {
                 <p className="text-sm text-slate-500">Peso</p>
                 <p className="font-medium text-slate-800">
                   {animalSelecionado.peso !== null
-                    ? `${animalSelecionado.peso} kg`
+                    ? `${formatarNumero(animalSelecionado.peso)} kg`
                     : 'Não informado'}
                 </p>
               </div>
@@ -238,14 +387,18 @@ function App() {
               <div>
                 <p className="text-sm text-slate-500">Nascimento</p>
                 <p className="font-medium text-slate-800">
-                  {animalSelecionado.dataNascimento || 'Não informada'}
+                  {animalSelecionado.dataNascimento
+                    ? formatarData(animalSelecionado.dataNascimento)
+                    : 'Não informada'}
                 </p>
               </div>
 
               <div>
                 <p className="text-sm text-slate-500">Entrada</p>
                 <p className="font-medium text-slate-800">
-                  {animalSelecionado.dataEntrada}
+                  {animalSelecionado.dataEntrada
+                    ? formatarData(animalSelecionado.dataEntrada)
+                    : 'Não informada'}
                 </p>
               </div>
 
@@ -260,7 +413,7 @@ function App() {
                 <p className="text-sm text-slate-500">Valor de Compra</p>
                 <p className="font-medium text-slate-800">
                   {animalSelecionado.valorCompra !== null
-                    ? `R$ ${animalSelecionado.valorCompra.toFixed(2)}`
+                    ? formatarMoeda(animalSelecionado.valorCompra)
                     : 'Não informada'}
                 </p>
               </div>
@@ -272,13 +425,6 @@ function App() {
                 </p>
               </div>
             </div>
-
-            <p className="text-slate-600">
-              Peso:{' '}
-              {animalSelecionado.peso !== null
-                ? `${animalSelecionado.peso} Kg`
-                : 'Não informado'}
-            </p>
           </section>
         )}
       </div>
