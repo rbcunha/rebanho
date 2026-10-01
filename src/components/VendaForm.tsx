@@ -16,6 +16,7 @@ export function VendaForm({ animal, onCancelar, onVender }: VendaFormProps) {
     animal.valorVenda?.toString() ?? '',
   );
   const [erro, setErro] = useState('');
+  const hoje = new Date().toLocaleDateString('en-CA');
 
   return (
     <section className="p-6">
@@ -38,6 +39,7 @@ export function VendaForm({ animal, onCancelar, onVender }: VendaFormProps) {
             id="dataVenda"
             type="date"
             value={dataVenda}
+            max={hoje}
             onChange={(event) => setDataVenda(event.target.value)}
             className="w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-slate-500"
           />
@@ -108,6 +110,12 @@ export function VendaForm({ animal, onCancelar, onVender }: VendaFormProps) {
               );
               return;
             }
+
+            if (dataVenda > hoje) {
+              setErro(`A data da venda não pode ser posterior À data de hoje.`);
+              return;
+            }
+
             setErro('');
             onVender(dataVenda, comprador, textoParaNumero(valorVenda));
           }}

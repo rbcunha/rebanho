@@ -198,13 +198,15 @@ export function AnimalDetails({
           </button>
         )}
 
-        <button
-          type="button"
-          onClick={() => onEditar(animal)}
-          className="cursor-pointer rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700"
-        >
-          Editar
-        </button>
+        {animal.status === 'PLANTEL' && (
+          <button
+            type="button"
+            onClick={() => onEditar(animal)}
+            className="cursor-pointer rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700"
+          >
+            Editar
+          </button>
+        )}
 
         <button
           type="button"

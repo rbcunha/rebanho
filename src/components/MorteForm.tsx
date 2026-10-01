@@ -17,6 +17,8 @@ export function MorteForm({
   const [causaMorte, setCausaMorte] = useState(animal.causaMorte ?? '');
   const [erro, setErro] = useState('');
 
+  const hoje = new Date().toLocaleDateString('en-CA');
+
   return (
     <section className="p-6">
       <h2 className="text-xl font-semibold text-slate-800">
@@ -37,6 +39,7 @@ export function MorteForm({
             id="dataMorte"
             type="date"
             value={dataMorte}
+            max={hoje}
             onChange={(event) => setDataMorte(event.target.value)}
             className="w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-slate-500"
           />
@@ -86,6 +89,12 @@ export function MorteForm({
               setErro(
                 `A data da morte deve ser igual ou posterior à data de entrada do animal (${formatarData(animal.dataEntrada)}).`,
               );
+              return;
+            }
+
+            if (dataMorte > hoje) {
+              setErro('A data da morte não pode ser posterior À data de hoje.');
+
               return;
             }
 
