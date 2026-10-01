@@ -87,6 +87,7 @@ export async function inserirAnimal(animal: Animal): Promise<void> {
       animal.dataSaida,
       animal.comprador,
       animal.valorVenda,
+      animal.dataMorte,
       animal.causaMorte,
       animal.observacoes,
     ],
@@ -154,4 +155,10 @@ export async function atualizarMorte(animal: Animal): Promise<void> {
     WHERE id =?`,
     [animal.status, animal.dataMorte, animal.causaMorte, animal.id],
   );
+}
+
+export async function excluirAnimal(id: number): Promise<void> {
+  const db = await conectarBanco();
+
+  await db.execute('DELETE FROM animais WHERE id = ?', [id]);
 }

@@ -5,8 +5,7 @@ import { AnimalForm } from './components/AnimalForm';
 import { Modal } from './components/Modal';
 import { VendaForm } from './components/VendaForm';
 import { MorteForm } from './components/MorteForm';
-import { formatarMoeda, formatarNumero, textoParaNumero } from './utils/numero';
-import { formatarData } from './utils/data';
+import { textoParaNumero } from './utils/numero';
 import {
   conectarBanco,
   listarAnimais,
@@ -14,7 +13,10 @@ import {
   atualizarAnimal,
   atualizarVenda,
   atualizarMorte,
+  excluirAnimal,
 } from './lib/database';
+import { AnimalDetails } from './components/AnimalDetails';
+import { Dashboard } from './components/Dashboard';
 import './App.css';
 
 type Tela = 'dashboard' | 'animais';
@@ -134,6 +136,32 @@ function App() {
     setErroFormulario('');
   }
 
+  function editarAnimal(animal: Animal) {
+    setAnimalEmEdicao(animal);
+
+    setFormulario({
+      brinco: animal.brinco,
+      sexo: animal.sexo,
+      raca: animal.raca,
+      dataNascimento: animal.dataNascimento ?? '',
+      peso: animal.peso?.toString() ?? '',
+      dataEntrada: animal.dataEntrada,
+      origem: animal.origem ?? '',
+      valorCompra: animal.valorCompra?.toString() ?? '',
+      observacoes: animal.observacoes ?? '',
+    });
+
+    setFormularioAberto(true);
+  }
+
+  function fecharDetalhesAnimal() {
+    setAnimalSelecionado(null);
+    setAnimalEmEdicao(null);
+    setFormulario(formularioInicial);
+    setFormularioAberto(false);
+    setErroFormulario('');
+  }
+
   async function venderAnimal(
     dataVenda: string,
     comprador: string,
@@ -182,89 +210,53 @@ function App() {
     setAnimalEmMorte(null);
   }
 
-  const totalPlantel = animais.filter(
-    (animal) => animal.status === 'PLANTEL',
-  ).length;
+  async function removerAnimal(animal: Animal) {
+    await excluirAnimal(animal.id);
 
-  const totalVendidos = animais.filter(
-    (animal) => animal.status === 'VENDIDO',
-  ).length;
+    setAnimais((animaisAtuais) =>
+      animaisAtuais.filter((item) => '== animal.id'),
+    );
 
-  const totalMortos = animais.filter(
-    (animal) => animal.status === 'MORTO',
-  ).length;
-
-  const valorInvestido = animais.reduce(
-    (total, animal) => total + (animal.valorCompra ?? 0),
-    0,
-  );
+    setAnimalSelecionado(null);
+    setAnimalEmEdicao(null);
+    setAnimalEmVenda(null);
+    setAnimalEmMorte(null);
+  }
 
   return (
     <main className="min-h-screen bg-slate-100">
       <div className="mx-auto max-w-6xl">
         <nav className="mb-6 flex gap-3 pt-6">
-          <button
-            type="button"
-            onClick={() => setTelaAtual('dashboard')}
-            className="cursor-pointer rounded-lg bg-slate-800 px-4 py-2 text-white"
-          >
-            Dashboard
-          </button>
+          {telaAtual === 'dashboard' && (
+            <button
+              type="button"
+              onClick={() => setTelaAtual('animais')}
+              className="cursor-pointer rounded-lg bg-slate-800 px-4 py-2 text-white hover:bg-slate-700"
+            >
+              Animais
+            </button>
+          )}
 
-          <button
-            type="button"
-            onClick={() => setTelaAtual('animais')}
-            className="cursor-pointer rounded-lg bg-slate-800 px-4 py-2 text-white"
-          >
-            Animais
-          </button>
+          {telaAtual === 'animais' && (
+            <button
+              type="button"
+              onClick={() => setTelaAtual('dashboard')}
+              className="cursor-pointer rounded-lg bg-slate-800 px-4 py-2 text-white hover:bg-slate-700"
+            >
+              Dashboard
+            </button>
+          )}
         </nav>
 
-        {telaAtual === 'dashboard' && (
-          <section className="py-6">
-            <h1 className="text-3xl font-bold text-slate-800">Dashboard</h1>
-            <p className="mt-2 text-slate-500">Visão geral do rebanho</p>
-
-            <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-              <div className="rounded-xl bg-white p-5 shadow-sm">
-                <p className="text-sm text-slate-500">Plantel</p>
-                <p className="mt-2 text-3xl font-semibold text-slate-800">
-                  {totalPlantel}
-                </p>
-              </div>
-
-              <div className="rounded-xl bg-white p-5 shadow-sm">
-                <p className="text-sm text-slate-500">Vendidos</p>
-                <p className="mt-2 text-3xl font-semibold text-slate-800">
-                  {totalVendidos}
-                </p>
-              </div>
-
-              <div className="rounded-xl bg-white p-5 shadow-sm">
-                <p className="text-sm text-slate-500">Mortos</p>
-                <p className="mt-2 text-3xl font-semibold text-slate-800">
-                  {totalMortos}
-                </p>
-              </div>
-
-              <div className="rounded-xl bg-white p-5 shadow-sm">
-                <p className="text-sm text-slate-500">Valor Investido</p>
-                <p className="mt-2 text-2xl font-semibold text-slate-800">
-                  {formatarMoeda(valorInvestido)}
-                </p>
-              </div>
-            </div>
-          </section>
-        )}
+        {telaAtual === 'dashboard' && <Dashboard animais={animais} />}
 
         {telaAtual === 'animais' && (
           <>
-            <header className="mb-8 felx items-center justify-between">
+            <header className="mb-8 flex items-center justify-between">
               <div>
-                <h1 className="p-8 text-3xl font-bold text-slate-800">
-                  Bezerros
+                <h1 className="text-3xl font-bold text-slate-800">
+                  Controle do Rebanho
                 </h1>
-                <p className="mt-1 text-slate-500">Controle do Rebanho</p>
               </div>
               <button
                 type="button"
@@ -316,227 +308,14 @@ function App() {
             <AnimalList animais={animais} onSelecionar={setAnimalSelecionado} />
 
             {animalSelecionado && (
-              <section className="mt-6 rounded-xl bg-white p-6 shadow-sm">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <h2 className="text-xl font-semibold text-slate-800">
-                      Animal {animalSelecionado.brinco}
-                    </h2>
-
-                    <span
-                      className={`rounded-full bg-slate-100 px-2 py-1 text-sl font-medium ${
-                        animalSelecionado.status === 'PLANTEL'
-                          ? 'bg-emerald-100 text-emerald-700'
-                          : animalSelecionado.status === 'VENDIDO'
-                            ? 'bg-blue-100 text-blue-700'
-                            : 'bg-red-100 text-red-700'
-                      }`}
-                    >
-                      {animalSelecionado.status === 'PLANTEL'
-                        ? 'Plantel'
-                        : animalSelecionado.status === 'VENDIDO'
-                          ? 'Vendido'
-                          : 'Morto'}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                  <div>
-                    <p className="text-sm text-slate-500">Sexo</p>
-                    <p className="font-medium text-slate-800">
-                      {animalSelecionado.sexo}
-                    </p>
-                  </div>
-
-                  <div>
-                    <p className="text-sm text-slate-500">Raça</p>
-                    <p className="font-medium text-slate-800">
-                      {animalSelecionado.raca || 'Não informada'}
-                    </p>
-                  </div>
-
-                  <div>
-                    <p className="text-sm text-slate-500">Peso</p>
-                    <p className="font-medium text-slate-800">
-                      {animalSelecionado.peso !== null
-                        ? `${formatarNumero(animalSelecionado.peso)} kg`
-                        : 'Não informado'}
-                    </p>
-                  </div>
-
-                  <div>
-                    <p className="text-sm text-slate-500">Nascimento</p>
-                    <p className="font-medium text-slate-800">
-                      {animalSelecionado.dataNascimento
-                        ? formatarData(animalSelecionado.dataNascimento)
-                        : 'Não informada'}
-                    </p>
-                  </div>
-
-                  <div>
-                    <p className="text-sm text-slate-500">Entrada</p>
-                    <p className="font-medium text-slate-800">
-                      {animalSelecionado.dataEntrada
-                        ? formatarData(animalSelecionado.dataEntrada)
-                        : 'Não informada'}
-                    </p>
-                  </div>
-
-                  <div>
-                    <p className="text-sm text-slate-500">Origem</p>
-                    <p className="font-medium text-slate-800">
-                      {animalSelecionado.origem || 'Não informada'}
-                    </p>
-                  </div>
-
-                  <div>
-                    <p className="text-sm text-slate-500">Valor de Compra</p>
-                    <p className="font-medium text-slate-800">
-                      {animalSelecionado.valorCompra !== null
-                        ? formatarMoeda(animalSelecionado.valorCompra)
-                        : 'Não informada'}
-                    </p>
-                  </div>
-
-                  <div>
-                    <p className="text-sm text-slate-500">Observações</p>
-                    <p className="font-medium text-slate-800">
-                      {animalSelecionado.observacoes || 'Nenhuma observação'}
-                    </p>
-                  </div>
-
-                  {animalSelecionado.status === 'VENDIDO' && (
-                    <>
-                      <div>
-                        <p className="text-sm text-slate-500">Data da venda</p>
-                        <p className="font-medium text-slate-800">
-                          {animalSelecionado.dataSaida
-                            ? formatarData(animalSelecionado.dataSaida)
-                            : 'Não informada'}
-                        </p>
-                      </div>
-
-                      <div>
-                        <p className="text-sm text-slate-500">Comprador</p>
-                        <p className="font-medium text-slate-800">
-                          {animalSelecionado.comprador || 'Não informado'}
-                        </p>
-                      </div>
-
-                      <div>
-                        <p className="text-sm text-slate-500">Valor da venda</p>
-                        <p className="font-medium text-slate-800">
-                          {animalSelecionado.valorVenda !== null
-                            ? formatarMoeda(animalSelecionado.valorVenda)
-                            : 'Não informado'}
-                        </p>
-                      </div>
-                    </>
-                  )}
-
-                  {animalSelecionado.status === 'MORTO' && (
-                    <>
-                      <div>
-                        <p className="text-sm text-slate-500">Data da morte</p>
-                        <p className="font-medium text-slate-800">
-                          {animalSelecionado.dataMorte
-                            ? formatarData(animalSelecionado.dataMorte)
-                            : 'Não informada'}
-                        </p>
-                      </div>
-
-                      <div>
-                        <p className="text-sm text-slate-500">Causa da morte</p>
-                        <p className="font-medium text-slate-800">
-                          {animalSelecionado.causaMorte || 'Não informada'}
-                        </p>
-                      </div>
-                    </>
-                  )}
-                </div>
-
-                <div className="mt-6 flex flex-wrap items-center gap-3 border-t border-slate-200 pt-4">
-                  {animalSelecionado.status === 'PLANTEL' && (
-                    <>
-                      <button
-                        type="button"
-                        onClick={() => setAnimalEmVenda(animalSelecionado)}
-                        className="cursor-pointer rounded-lg bg-emerald-700 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-600"
-                      >
-                        Vender
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() => setAnimalEmMorte(animalSelecionado)}
-                        className="cursor-pointer rounded-lg bg-red-700 px-4 py-2 text-sm font-medium text-white hover:bg-red-600"
-                      >
-                        Registrar morte
-                      </button>
-                    </>
-                  )}
-
-                  {animalSelecionado.status === 'VENDIDO' && (
-                    <button
-                      type="button"
-                      onClick={() => setAnimalEmVenda(animalSelecionado)}
-                      className="cursor-pointer rounded-lg bg-emerald-700 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-600"
-                    >
-                      Editar venda
-                    </button>
-                  )}
-
-                  {animalSelecionado.status === 'MORTO' && (
-                    <button
-                      type="button"
-                      onClick={() => setAnimalEmMorte(animalSelecionado)}
-                      className="cursor-pointer rounded-lg bg-red-700 px-4 py-2 text-sm font-medium text-white hover:bg-red-600"
-                    >
-                      Editar morte
-                    </button>
-                  )}
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setAnimalEmEdicao(animalSelecionado);
-
-                      setFormulario({
-                        brinco: animalSelecionado.brinco,
-                        sexo: animalSelecionado.sexo,
-                        raca: animalSelecionado.raca,
-                        dataNascimento: animalSelecionado.dataNascimento ?? '',
-                        peso: animalSelecionado.peso?.toString() ?? '',
-                        dataEntrada: animalSelecionado.dataEntrada,
-                        origem: animalSelecionado.origem ?? '',
-                        valorCompra:
-                          animalSelecionado.valorCompra?.toString() ?? '',
-                        observacoes: animalSelecionado.observacoes ?? '',
-                      });
-
-                      setFormularioAberto(true);
-                    }}
-                    className="cursor-pointer rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700"
-                  >
-                    Editar
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setAnimalSelecionado(null);
-                      setAnimalEmEdicao(null);
-                      setFormulario(formularioInicial);
-                      setFormularioAberto(false);
-                      setErroFormulario('');
-                    }}
-                    className="cursor-pointer text-sm text-slate-500 hover:text-slate-800"
-                  >
-                    Fechar
-                  </button>
-                </div>
-              </section>
+              <AnimalDetails
+                animal={animalSelecionado}
+                onEditar={editarAnimal}
+                onVender={setAnimalEmVenda}
+                onRegistrarMorte={setAnimalEmMorte}
+                onFechar={fecharDetalhesAnimal}
+                onExcluir={removerAnimal}
+              />
             )}
           </>
         )}
