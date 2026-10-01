@@ -214,7 +214,7 @@ function App() {
     await excluirAnimal(animal.id);
 
     setAnimais((animaisAtuais) =>
-      animaisAtuais.filter((item) => '== animal.id'),
+      animaisAtuais.filter((item) => item.id !== animal.id),
     );
 
     setAnimalSelecionado(null);
