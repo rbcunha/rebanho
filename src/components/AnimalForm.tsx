@@ -247,7 +247,7 @@ export function AnimalForm({
         <button
           type="button"
           onClick={onCancelar}
-          className="cursor-pointer rounded-lg border border-slate-300 bg-white px-5 py-2 font-medium text-slate-700 hover:bg-slate-100"
+          className="cursor-pointer rounded-lg border border-slate-300 bg-white px-5 py-2 font-medium text-rebanho-text hover:bg-slate-100"
         >
           Cancelar
         </button>
@@ -255,7 +255,7 @@ export function AnimalForm({
         <button
           type="button"
           onClick={onSalvar}
-          className="cursor-pointer rounded-lg bg-slate-800 px-5 py-2 font-medium text-white hover:bg-slate-700"
+          className="cursor-pointer rounded-lg bg-rebanho-primary px-5 py-2 font-medium text-white hover:bg-rebanho-accent"
         >
           {animalEmEdicao ? 'Salvar alterações' : 'Salvar'}
         </button>

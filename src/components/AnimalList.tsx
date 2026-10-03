@@ -7,9 +7,9 @@ type AnimalListProps = {
 
 export function AnimalList({ animais, onSelecionar }: AnimalListProps) {
   return (
-    <section className="overflow-hidden rounded-xl bg-white shadow-sm">
+    <section className="overflow-hidden rounded-xl border border-rebanho-border bg-white shadow-md">
       <table className="w-full text-left">
-        <thead className="border-b border-slate-200 bg-slate-50">
+        <thead className="border-b border-rebanho-border bg-rebanho-background text-sm text-rebanho-text">
           <tr>
             <th className="px-6 py-4">Brinco</th>
             <th className="px-6 py-4">Sexo</th>
@@ -25,7 +25,7 @@ export function AnimalList({ animais, onSelecionar }: AnimalListProps) {
             <tr
               key={animal.id}
               onClick={() => onSelecionar(animal)}
-              className="cursor-pointer border-b border-slate-100 last:border-0 hover:bg-slate-50"
+              className="cursor-pointer border-b border-rebanho-border text-rebanho-text last:border-0 hover:bg-rebanho-background"
             >
               <td className="px-6 py-4 font-medium">{animal.brinco}</td>
               <td className="px-6 py-4">{animal.sexo}</td>

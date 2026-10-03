@@ -17,9 +17,9 @@ import {
 } from './lib/database';
 import { AnimalDetails } from './components/AnimalDetails';
 import { Dashboard } from './components/Dashboard';
-import './App.css';
+import { Relatorio } from './components/Relatorio';
 
-type Tela = 'dashboard' | 'animais';
+type Tela = 'dashboard' | 'animais' | 'relatorio';
 
 const formularioInicial = {
   brinco: '',
@@ -224,52 +224,52 @@ function App() {
   }
 
   return (
-    <main className="min-h-screen bg-slate-100">
+    <main className="min-h-screen bg-rebanho-background">
       <div className="mx-auto max-w-6xl">
-        <nav className="mb-6 flex gap-3 pt-6">
-          {telaAtual === 'dashboard' && (
-            <button
-              type="button"
-              onClick={() => setTelaAtual('animais')}
-              className="cursor-pointer rounded-lg bg-slate-800 px-4 py-2 text-white hover:bg-slate-700"
-            >
-              Animais
-            </button>
-          )}
+        {telaAtual === 'dashboard' && (
+          <Dashboard
+            animais={animais}
+            onAnimais={() => setTelaAtual('animais')}
+            onRelatorio={() => setTelaAtual('relatorio')}
+          />
+        )}
 
-          {telaAtual === 'animais' && (
-            <button
-              type="button"
-              onClick={() => setTelaAtual('dashboard')}
-              className="cursor-pointer rounded-lg bg-slate-800 px-4 py-2 text-white hover:bg-slate-700"
-            >
-              Dashboard
-            </button>
-          )}
-        </nav>
-
-        {telaAtual === 'dashboard' && <Dashboard animais={animais} />}
+        {telaAtual === 'relatorio' && (
+          <Relatorio
+            animais={animais}
+            onVoltar={() => setTelaAtual('dashboard')}
+          />
+        )}
 
         {telaAtual === 'animais' && (
           <>
-            <header className="mb-8 flex items-center justify-between">
-              <div>
-                <h1 className="text-3xl font-bold text-slate-800">
-                  Controle do Rebanho
-                </h1>
+            <header className="mb-8 pt-6">
+              <div className="flex items-center justify-between">
+                <button
+                  type="button"
+                  onClick={() => setTelaAtual('dashboard')}
+                  className="cursor-pointer rounded-lg bg-rebanho-primary px-4 py-2 text-white hover:bg-rebanho-accent"
+                >
+                  Dashboard
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setAnimalEmEdicao(null);
+                    setFormulario(formularioInicial);
+                    setErroFormulario('');
+                    setFormularioAberto(true);
+                  }}
+                  className="cursor-pointer rounded-lg bg-rebanho-primary px-5 py-3 font-medium text-white hover:bg-rebanho-accent"
+                >
+                  + Novo animal
+                </button>
               </div>
-              <button
-                type="button"
-                onClick={() => {
-                  setAnimalEmEdicao(null);
-                  setFormulario(formularioInicial);
-                  setErroFormulario('');
-                  setFormularioAberto(true);
-                }}
-                className="cursor-pointer rounded-lg bg-slate-800 px-5 py-3 font-medium text-white hover:bg-slate-700"
-              >
-                + Novo animal
-              </button>
+
+              <h1 className="mt-8 text-center text-3xl font-bold text-rebanho-text">
+                Controle do Rebanho
+              </h1>
             </header>
 
             {formularioAberto && (

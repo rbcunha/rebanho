@@ -23,17 +23,17 @@ export function AnimalDetails({
     <section className="mt-6 rounded-xl bg-white p-6 shadow-sm">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <h2 className="text-xl font-semibold text-slate-800">
+          <h2 className="text-xl font-semibold text-rebanho-text">
             Animal {animal.brinco}
           </h2>
 
           <span
-            className={`rounded-full px-2 py-1 text-xl font-medium ${
+            className={`rounded-lg px-2 py-1 text-xl font-medium ${
               animal.status === 'PLANTEL'
-                ? 'bg-emerald-100 text-emerald-700'
+                ? 'bg-rebanho-border text-rebanho-primary'
                 : animal.status === 'VENDIDO'
-                  ? 'bg-blue-100 text-blue-700'
-                  : 'bg-red-100 text-red-700'
+                  ? 'bg-rebanho-border text-rebanho-primary'
+                  : 'bg-rebanho-border text-rebanho-text'
             }`}
           >
             {animal.status === 'PLANTEL'
@@ -47,20 +47,20 @@ export function AnimalDetails({
 
       <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <div>
-          <p className="text-sm text-slate-500">Sexo</p>
-          <p className="font-medium text-slate-800">{animal.sexo}</p>
+          <p className="text-sm text-rebanho-muted">Sexo</p>
+          <p className="font-medium text-rebanho-text">{animal.sexo}</p>
         </div>
 
         <div>
-          <p className="text-sm text-slate-500">Raça</p>
-          <p className="font-medium text-slate-800">
+          <p className="text-sm text-rebanho-muted">Raça</p>
+          <p className="font-medium text-rebanho-text">
             {animal.raca || 'Não informada'}
           </p>
         </div>
 
         <div>
-          <p className="text-sm text-slate-500">Peso</p>
-          <p className="font-medium text-slate-800">
+          <p className="text-sm text-rebanho-muted">Peso</p>
+          <p className="font-medium text-rebanho-text">
             {animal.peso !== null
               ? `${formatarNumero(animal.peso)} kg`
               : 'Não informado'}
@@ -68,8 +68,8 @@ export function AnimalDetails({
         </div>
 
         <div>
-          <p className="text-sm text-slate-500">Nascimento</p>
-          <p className="font-medium text-slate-800">
+          <p className="text-sm text-rebanho-muted">Nascimento</p>
+          <p className="font-medium text-rebanho-text">
             {animal.dataNascimento
               ? formatarData(animal.dataNascimento)
               : 'Não informada'}
@@ -77,8 +77,8 @@ export function AnimalDetails({
         </div>
 
         <div>
-          <p className="text-sm text-slate-500">Entrada</p>
-          <p className="font-medium text-slate-800">
+          <p className="text-sm text-rebanho-muted">Entrada</p>
+          <p className="font-medium text-rebanho-text">
             {animal.dataEntrada
               ? formatarData(animal.dataEntrada)
               : 'Não informada'}
@@ -86,15 +86,15 @@ export function AnimalDetails({
         </div>
 
         <div>
-          <p className="text-sm text-slate-500">Origem</p>
-          <p className="font-medium text-slate-800">
+          <p className="text-sm text-rebanho-muted">Origem</p>
+          <p className="font-medium text-rebanho-text">
             {animal.origem || 'Não informada'}
           </p>
         </div>
 
         <div>
-          <p className="text-sm text-slate-500">Valor de Compra</p>
-          <p className="font-medium text-slate-800">
+          <p className="text-sm text-rebanho-muted">Valor de Compra</p>
+          <p className="font-medium text-rebanho-text">
             {animal.valorCompra !== null
               ? formatarMoeda(animal.valorCompra)
               : 'Não informado'}
@@ -102,8 +102,8 @@ export function AnimalDetails({
         </div>
 
         <div>
-          <p className="text-sm text-slate-500">Observações</p>
-          <p className="font-medium text-slate-800">
+          <p className="text-sm text-rebanho-muted">Observações</p>
+          <p className="font-medium text-rebanho-text">
             {animal.observacoes || 'Nenhuma observação'}
           </p>
         </div>
@@ -111,8 +111,8 @@ export function AnimalDetails({
       {animal.status === 'VENDIDO' && (
         <div className="mt-6 grid gap-4 border-t border-slate-200 pt-4 sm:grid-cols-3">
           <div>
-            <p className="text-sm text-slate-500">Data da venda</p>
-            <p className="font-medium text-slate-800">
+            <p className="text-sm text-rebanho-muted">Data da venda</p>
+            <p className="font-medium text-rebanho-text">
               {animal.dataSaida
                 ? formatarData(animal.dataSaida)
                 : 'Não informada'}
@@ -120,15 +120,15 @@ export function AnimalDetails({
           </div>
 
           <div>
-            <p className="text-sm text-slate-500">Comprador</p>
-            <p className="font-medium text-slate-800">
+            <p className="text-sm text-rebanho-muted">Comprador</p>
+            <p className="font-medium text-rebanho-text">
               {animal.comprador || 'Não informado'}
             </p>
           </div>
 
           <div>
-            <p className="text-sm text-slate-500">Valor da venda</p>
-            <p className="font-medium text-slate-800">
+            <p className="text-sm text-rebanho-muted">Valor da venda</p>
+            <p className="font-medium text-rebanho-text">
               {animal.valorVenda !== null
                 ? formatarMoeda(animal.valorVenda)
                 : 'Não informado'}
@@ -140,8 +140,8 @@ export function AnimalDetails({
       {animal.status === 'MORTO' && (
         <div className="mt-6 grid gap-4 border-t border-slate-200 pt-4 sm:grid-cols-2">
           <div>
-            <p className="text-sm text-slate-500">Data da morte</p>
-            <p className="font-medium text-slate-800">
+            <p className="text-sm text-rebanho-muted">Data da morte</p>
+            <p className="font-medium text-rebanho-text">
               {animal.dataMorte
                 ? formatarData(animal.dataMorte)
                 : 'Não informada'}
@@ -149,8 +149,8 @@ export function AnimalDetails({
           </div>
 
           <div>
-            <p className="text-sm text-slate-500">Causa da morte</p>
-            <p className="font-medium text-slate-800">
+            <p className="text-sm text-rebanho-muted">Causa da morte</p>
+            <p className="font-medium text-rebanho-text">
               {animal.causaMorte || 'Não informada'}
             </p>
           </div>
@@ -163,7 +163,7 @@ export function AnimalDetails({
             <button
               type="button"
               onClick={() => onVender(animal)}
-              className="cursor-pointer rounded-lg bg-emerald-700 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-600"
+              className="cursor-pointer rounded-lg bg-rebanho-primary px-4 py-2 text-sm font-medium text-white hover:bg-rebanho-accent"
             >
               Vender
             </button>
@@ -171,7 +171,7 @@ export function AnimalDetails({
             <button
               type="button"
               onClick={() => onRegistrarMorte(animal)}
-              className="cursor-pointer rounded-lg bg-red-700 px-4 py-2 text-sm font-medium text-white hover:bg-red-600"
+              className="cursor-pointer rounded-lg bg-rebanho-primary px-4 py-2 text-sm font-medium text-white hover:bg-rebanho-accent"
             >
               Registrar morte
             </button>
@@ -182,7 +182,7 @@ export function AnimalDetails({
           <button
             type="button"
             onClick={() => onVender(animal)}
-            className="cursor-pointer rounded-lg bg-emerald-700 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-600"
+            className="cursor-pointer rounded-lg bg-rebanho-primary px-4 py-2 text-sm font-medium text-white hover:bg-rebanho-accent"
           >
             Editar venda
           </button>
@@ -192,7 +192,7 @@ export function AnimalDetails({
           <button
             type="button"
             onClick={() => onRegistrarMorte(animal)}
-            className="cursor-pointer rounded-lg bg-red-700 px-4 py-2 text-sm font-medium text-white hover:bg-red-600"
+            className="cursor-pointer rounded-lg bg-rebanho-primary px-4 py-2 text-sm font-medium text-white hover:bg-rebanho-accent"
           >
             Editar morte
           </button>
@@ -202,7 +202,7 @@ export function AnimalDetails({
           <button
             type="button"
             onClick={() => onEditar(animal)}
-            className="cursor-pointer rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700"
+            className="cursor-pointer rounded-lg bg-rebanho-primary px-4 py-2 text-sm font-medium text-white hover:bg-rebanho-accent"
           >
             Editar
           </button>
@@ -227,7 +227,7 @@ export function AnimalDetails({
         <button
           type="button"
           onClick={onFechar}
-          className="cursor-pointer text-sm text-slate-500 hover:text-slate-800"
+          className="cursor-pointer text-sm text-rebanho-muted hover:text-rebanho-text"
         >
           Fechar
         </button>

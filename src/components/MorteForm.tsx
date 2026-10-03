@@ -72,7 +72,7 @@ export function MorteForm({
         <button
           type="button"
           onClick={onCancelar}
-          className="cursor-pointer rounded-lg border border-slate-300 bg-white px-5 py-2 font-medium text-slate-700 hover:bg-slate-100"
+          className="cursor-pointer rounded-lg border border-slate-300 bg-white px-5 py-2 font-medium text-rebanho-text hover:bg-slate-100"
         >
           Cancelar
         </button>
@@ -101,7 +101,7 @@ export function MorteForm({
             setErro('');
             onRegistrarMorte(dataMorte, causaMorte);
           }}
-          className="cursor-pointer rounded-lg bg-red-700 px-5 py-2 font-medium text-white hover:bg-red-600"
+          className="cursor-pointer rounded-lg bg-rebanho-primary px-5 py-2 font-medium text-white hover:bg-rebanho-accent"
         >
           Confirmar morte
         </button>

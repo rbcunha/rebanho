@@ -91,7 +91,7 @@ export function VendaForm({ animal, onCancelar, onVender }: VendaFormProps) {
         <button
           type="button"
           onClick={onCancelar}
-          className="cursor-pointer rounded-lg border border-slate-300 bg-white px-5 py-2 font-medium text-slate-700 hover:bg-slate-100"
+          className="cursor-pointer rounded-lg border border-slate-300 bg-white px-5 py-2 font-medium text-rebanho-text hover:bg-slate-100"
         >
           Cancelar
         </button>
@@ -119,7 +119,7 @@ export function VendaForm({ animal, onCancelar, onVender }: VendaFormProps) {
             setErro('');
             onVender(dataVenda, comprador, textoParaNumero(valorVenda));
           }}
-          className="cursor-pointer rounded-lg bg-emerald-700 px-5 py-2 font-medium text-white hover:bg-emerald-600"
+          className="cursor-pointer rounded-lg bg-rebanho-primary px-5 py-2 font-medium text-white hover:bg-rebanho-accent"
         >
           Confirmar Venda
         </button>

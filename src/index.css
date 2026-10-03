@@ -1,2 +1,27 @@
 @import 'tailwindcss';
 
+@theme {
+  --color-rebanho-primary: #72752f;
+  --color-rebanho-accent: #94b444;
+  --color-rebanho-muted: #9a9c6b;
+  --color-rebanho-border: #cccead;
+  --color-rebanho-text: #736359;
+  --color-rebanho-info: #a6c8e0;
+  --color-rebanho-background: #e9eadb;
+}
+
+@media print {
+  @page {
+    size: A4;
+    margin: 0;
+  }
+
+  body {
+    margin: 0;
+    background: white;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+}
